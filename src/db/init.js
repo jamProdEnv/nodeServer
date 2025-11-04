@@ -1,10 +1,10 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-export function initDatabase(){
-    const DATABASE_URL = process.env.DATABASE_URL;
-    mongoose.connection.on("open", () => {
-        console.info("Connected To Database: ", DATABASE_URL);
-    });
-    const connection = mongoose.connect(DATABASE_URL);
-    return connection;
+export function initDatabase() {
+  const DATABASE_URL = "mongodb://localhost:27017/chat";
+  mongoose.connection.on("open", () => {
+    console.info("Successfully connected to database:", DATABASE_URL);
+  });
+  const connection = mongoose.connect(DATABASE_URL);
+  return connection;
 }
