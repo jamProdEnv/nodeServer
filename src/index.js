@@ -1,14 +1,14 @@
 import dotenv from "dotenv";
-import { initDatabase } from "./db/init.js";
-import { app } from "./app.js";
 dotenv.config();
 
+import { app } from "./app.js";
+
+import { initDatabase } from "./db/init.js";
 
 try {
-    const PORT = process.env.PORT;
-    await initDatabase();
-    app.listen(PORT);
-    console.info("Server Running: ", PORT);
+  await initDatabase();
+  const PORT = 3000;
+  app.listen(PORT);
 } catch (error) {
-    console.error("Could Not Start Application: ", error);
+  console.error("Error connecting to database:", error);
 }
