@@ -26,9 +26,7 @@ jobs:
 
       # 4. Build new Docker image
       - name: Build Docker image
-        run: docker build \
-          --build-arg JWT_SECRET=${{ secrets.JWT_SECRET }} \
-          -t devjam12/node-server:latest .
+        run: docker build --build-arg JWT_SECRET=${{ secrets.JWT_SECRET }} -t devjam12/node-server:latest .
 
       # 5. Push Docker image to Docker Hub
       - name: Push Docker image
