@@ -1,9 +1,10 @@
-# Accept JWT_SECRET as a build argument
-ARG JWT_SECRET
-ENV JWT_SECRET=$JWT_SECRET
 
 # Use official Node.js LTS image
 FROM node:20-alpine
+
+# Accept JWT_SECRET as a build argument
+ARG JWT_SECRET
+ENV JWT_SECRET=$JWT_SECRET
 
 # Set working directory
 WORKDIR /app
