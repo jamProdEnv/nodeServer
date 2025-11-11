@@ -39,3 +39,9 @@ export async function getAllUsers() {
   }
   return users;
 }
+
+export async function deleteUser(id) {
+  const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) throw new Error("Cannot Delete User.");
+  return user;
+}

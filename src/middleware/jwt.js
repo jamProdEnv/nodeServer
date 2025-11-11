@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({ path: ".env.local" });
 import { expressjwt } from "express-jwt";
 
 export const requireAuth = expressjwt({

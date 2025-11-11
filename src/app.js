@@ -4,7 +4,8 @@ import bodyParser from "body-parser";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import { handleSocket } from "./socket.js";
-import { userRoutes } from "./routes/Users.js";
+import { userRoutes } from "./routes/UserRoutes.js";
+import { postRoutes } from "./routes/PostRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -24,5 +25,6 @@ const io = new Server(server, {
 
 handleSocket(io);
 userRoutes(app);
+postRoutes(app);
 
 export { server as app };

@@ -8,7 +8,6 @@ import {
 } from "./services/ChatService.js";
 import jwt from "jsonwebtoken";
 import { getUserInfoById } from "./services/UserService.js";
-import { ReadConcern } from "mongodb";
 
 export function handleSocket(io) {
   io.use((socket, next) => {
