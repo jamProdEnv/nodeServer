@@ -4,7 +4,11 @@ FROM node:20-alpine
 
 # Accept JWT_SECRET as a build argument
 ARG JWT_SECRET
+ARG DATABASE_URL
+ARG PORT
 ENV JWT_SECRET=$JWT_SECRET
+ENV DATABASE_URL=$DATABASE_URL
+ENV PORT=$PORT
 
 # Set working directory
 WORKDIR /app
