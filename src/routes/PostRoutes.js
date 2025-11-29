@@ -3,16 +3,21 @@ import {
   createPost,
   listAllPosts,
   listPostsByAuthor,
+  listPostsByTags,
 } from "../services/PostService.js";
 
 export function postRoutes(app) {
   app.post("/api/v1/post/createPost", requireAuth, async (req, res) => {
     try {
-      const post = await createPost(req.auth.sub, req.body);
+      const post = await createPost(req.auth.sub, {
+        title: req.body.title,
+        contents: req.body.contents,
+        tags: req.body.tags,
+      });
       console.log(post);
       return res.status(201).json(post);
     } catch (error) {
-      console.error("\npostRoutes(app) Error.");
+      console.error("\npostRoutes(app) Error.", error);
       return res.status(400).json({
         error: "Cannot Create Post.",
       });

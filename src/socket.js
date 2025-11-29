@@ -8,8 +8,18 @@ import {
 } from "./services/ChatService.js";
 import jwt from "jsonwebtoken";
 import { getUserInfoById } from "./services/UserService.js";
+import { RateLimiterMemory } from "rate-limiter-flexible";
 
 export function handleSocket(io) {
+  const messageLimiter = new RateLimiterMemory({
+    points: 5,
+    duration: 1,
+  });
+
+  const connectionLimiter = new RateLimiterMemory({
+    points: 10, // 10 connections
+    duration: 60, // per minute
+  });
   io.use((socket, next) => {
     if (!socket.handshake.auth?.token) {
       return next(new Error("Authentication failed: no token provided"));
@@ -28,6 +38,15 @@ export function handleSocket(io) {
         return next();
       }
     );
+  });
+
+  io.use(async (socket, next) => {
+    try {
+      await connectionLimiter.consume(socket.handshake.address);
+      next();
+    } catch (error) {
+      next(new Error("Too Many Connections From This IP"));
+    }
   });
 
   let onlineUsers = [];
@@ -52,8 +71,20 @@ export function handleSocket(io) {
     //   joinRoom(io, socket, { room });
     // }
     // joinRoom(io, socket, { roomName });
+
     socket.on("chat.message", (room, message) => {
-      sendPublicMessage(io, { username: socket.user.username, room, message });
+      try {
+        // messageLimiter.consume(socket.handshake.address);
+        sendPublicMessage(io, {
+          username: socket.user.username,
+          room,
+          message,
+        });
+      } catch (error) {
+        socket.emit("You Are Sending Too Many Messages Too Quickly.");
+        console.error("Too Many Requests", error);
+      }
+
       //   sendPrivateMessage(socket, {
       //     username: socket.user.username,
       //     room,
