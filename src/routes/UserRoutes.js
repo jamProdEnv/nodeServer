@@ -3,6 +3,7 @@ import {
   loginUser,
   getUserInfoById,
   getAllUsers,
+  deleteUser,
 } from "../services/UserService.js";
 
 export function userRoutes(app) {
@@ -49,6 +50,23 @@ export function userRoutes(app) {
     } catch (error) {
       return res.status(400).json({
         error: "Cannot Retrieve The Data.",
+      });
+    }
+  });
+
+  app.delete("/api/v1/users/:id", async (req, res) => {
+    const id = req.params.id;
+    try {
+      const deletedUser = await deleteUser(id);
+      if (deletedUser === true)
+        return res.status(200).json({
+          message: "Successfully Deleted User:",
+          deleteUser,
+        });
+    } catch (error) {
+      console.error("Could Not Delete The User.", error);
+      return res.status(401).json({
+        error: `Could Not Delete User With Id: ${id}`,
       });
     }
   });

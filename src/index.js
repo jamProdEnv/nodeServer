@@ -9,6 +9,7 @@ try {
   await initDatabase();
   const PORT = 3000;
   app.listen(PORT);
+  console.info("App Is Running On Port:", PORT);
 } catch (error) {
   console.error("Error connecting to database:", error);
 }
