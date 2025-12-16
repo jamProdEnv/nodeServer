@@ -46,7 +46,6 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   },
 });
-app.options("/*", cors());
 handleSocket(io);
 userRoutes(app);
 postRoutes(app);
