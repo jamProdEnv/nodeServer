@@ -18,9 +18,18 @@ export async function loginUser({ username, password }) {
   if (!isPasswordCorrect) {
     throw new Error("invalid password!");
   }
-  const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "24h",
-  });
+  const payload = {
+    sub: user._id,
+    username: user.username,
+    role: user.role,
+  };
+
+  // const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, {
+  //   expiresIn: "24h",
+  // });
+  console.log(user.role);
+
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "24h" });
   return token;
 }
 
