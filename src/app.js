@@ -11,6 +11,8 @@ import { rateLimit } from "express-rate-limit";
 const app = express();
 // app.use(cors());
 // CORS for Express
+// Trust first proxy (your Nginx)
+app.set("trust proxy", 1);
 const allowedOrigins = ["http://wsjr.net", "http://100.27.195.62"];
 app.use(
   cors({
