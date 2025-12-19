@@ -13,7 +13,12 @@ const app = express();
 // CORS for Express
 // Trust first proxy (your Nginx)
 app.set("trust proxy", 1);
-const allowedOrigins = ["http://wsjr.net", "http://100.27.195.62"];
+const allowedOrigins = [
+  "http://wsjr.net",
+  "http://www.wsjr.net",
+  "http://100.27.195.62",
+  "http://localhost:5173",
+];
 app.use(
   cors({
     origin: function (origin, callback) {
