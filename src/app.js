@@ -7,6 +7,7 @@ import { handleSocket } from "./socket.js";
 import { userRoutes } from "./routes/UserRoutes.js";
 import { postRoutes } from "./routes/PostRoutes.js";
 import { rateLimit } from "express-rate-limit";
+import { adminRoutes } from "./routes/AdminRoutes.js";
 
 const app = express();
 // app.use(cors());
@@ -55,6 +56,7 @@ const io = new Server(server, {
 });
 handleSocket(io);
 userRoutes(app);
+adminRoutes(app);
 postRoutes(app);
 
 export { server as app };

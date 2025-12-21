@@ -9,6 +9,7 @@ import {
 import jwt from "jsonwebtoken";
 import { getUserInfoById } from "./services/UserService.js";
 import { RateLimiterMemory } from "rate-limiter-flexible";
+import { getAdminInfoById } from "./services/AdminService.js";
 
 export function handleSocket(io) {
   const messageLimiter = new RateLimiterMemory({
@@ -34,7 +35,13 @@ export function handleSocket(io) {
           return next(new Error("Authentication failed: invalid token"));
         }
         socket.auth = decodedToken;
-        socket.user = await getUserInfoById(socket.auth.sub);
+        if (socket.auth.role === "admin") {
+          socket.user = await getAdminInfoById(socket.auth.sub);
+          socket.user.role = "admin";
+        } else {
+          socket.user = await getUserInfoById(socket.auth.sub);
+          socket.user.role = "user";
+        }
         return next();
       }
     );
