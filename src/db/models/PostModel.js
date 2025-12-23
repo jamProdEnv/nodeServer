@@ -4,7 +4,7 @@ export const postSchema = new Schema(
   {
     title: { type: String, required: true },
 
-    author: { type: Schema.Types.ObjectId, ref: "user", required: true },
+    author: { type: Schema.Types.ObjectId, ref: "admin", required: true },
     contents: { type: String },
     tags: [String],
   },
