@@ -1,3 +1,4 @@
+import { Admin } from "../db/models/AdminModel.js";
 import { Post } from "../db/models/PostModel.js";
 import { User } from "../db/models/UserModel.js";
 
@@ -5,8 +6,16 @@ export async function createPost(userId, { title, contents, tags }) {
   if (title == null || title.trim() === "") {
     title = "Post";
   }
+  const normalizedTags = tags
+    .map((t) => t.toLowerCase().trim())
+    .filter(boolean);
+  const post = new Post({
+    author: userId,
+    title,
+    contents,
+    tags: [...set(normalizedTags)],
+  });
 
-  const post = new Post({ author: userId, title, contents, tags });
   if (!post) {
     throw new Error("cannot Create Post In createPost() Service.");
   }
@@ -19,7 +28,9 @@ async function listPosts(
 ) {
   //  Mongoose Syntax For Querying The Database (ORM)
   //  Not Very Familiar With It
-  return await Post.find(query).sort({ [sortBy]: sortOrder });
+  return await Post.find(query)
+    .populate("author", "username")
+    .sort({ [sortBy]: sortOrder });
 }
 
 export async function listAllPosts(options) {
@@ -27,11 +38,17 @@ export async function listAllPosts(options) {
 }
 
 export async function listPostsByAuthor(authorUsername, options) {
-  const user = await User.findOne({ username: authorUsername });
-  if (!user) return [];
-  return await listPosts({ author: user._id }, options);
+  // const user = await User.findOne({ username: authorUsername });
+  const admin = await Admin.findOne({ username: authorUsername });
+  // if (!user) return [];
+  if (!admin) return [];
+  // return await listPosts({ author: user._id }, options);
+  return await listPosts({ author: admin._id }, options);
 }
 
 export async function listPostsByTags(tags, options) {
-  return await listPosts({ tags }, options);
+  return await listPosts(
+    { tags: { $in: tags.map((t) => t.toLowerCase().trim()) } },
+    options
+  );
 }
