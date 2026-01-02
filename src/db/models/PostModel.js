@@ -8,7 +8,7 @@ export const postSchema = new Schema(
     contents: { type: String },
     tags: [String],
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 export const Post = mongoose.model("posts", postSchema);

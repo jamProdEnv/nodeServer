@@ -8,12 +8,12 @@ export async function createPost(userId, { title, contents, tags }) {
   }
   const normalizedTags = tags
     .map((t) => t.toLowerCase().trim())
-    .filter(boolean);
+    .filter(Boolean);
   const post = new Post({
     author: userId,
     title,
     contents,
-    tags: [...set(normalizedTags)],
+    tags: [...new Set(normalizedTags)],
   });
 
   if (!post) {
@@ -47,8 +47,12 @@ export async function listPostsByAuthor(authorUsername, options) {
 }
 
 export async function listPostsByTags(tags, options) {
-  return await listPosts(
-    { tags: { $in: tags.map((t) => t.toLowerCase().trim()) } },
-    options
-  );
+  const normalized = Array.isArray(tags)
+    ? tags.map((t) => t.toLowerCase().trim())
+    : [tags.toLowerCase().trim()];
+  // return await listPosts(
+  //   { tags: { $in: tags.map((t) => t.toLowerCase().trim()) } },
+  //   options
+  // );
+  return await listPosts({ tags: { $in: normalized } }, options);
 }
