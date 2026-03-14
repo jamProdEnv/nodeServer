@@ -19,6 +19,8 @@ const allowedOrigins = [
   "http://www.wsjr.net",
   "http://100.27.195.62",
   "http://localhost:5173",
+  "https://wsjr.net",
+  "https://www.wsjr.net",
 ];
 app.use(
   cors({
