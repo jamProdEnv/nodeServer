@@ -1,9 +1,13 @@
 import { requireAuth } from "../middleware/jwt.js";
+import { Post } from "../db/models/PostModel.js";
+
 import {
   createPost,
   listAllPosts,
   listPostsByAuthor,
   listPostsByTags,
+  deletePost,
+  updatePost
 } from "../services/PostService.js";
 
 export function postRoutes(app) {
@@ -48,4 +52,41 @@ export function postRoutes(app) {
       return res.status(500).end();
     }
   });
+
+  app.delete("/api/v1/posts/:id", requireAuth, async (req, res) => {
+    try {
+       const post = await Post.findById(req.params.id);
+
+    if (!post) return res.sendStatus(404);
+
+    // only author or admin
+    if (
+      post.author.toString() !== req.auth.sub &&
+      req.auth.role !== "admin"
+    ) {
+      return res.sendStatus(403);
+    }
+      const { deletedCount } = await deletePost(req.params.id)
+       // only author or admin
+   
+      if (deletedCount === 0) return res.sendStatus(404);
+      if (res.status(204)) {
+        return null;
+      }
+      return res.json();
+    }catch(error) {
+      console.error("Error Deleting Post:", error)
+      return res.status(500).end()
+    }
+  })
+
+  app.patch("/api/v1/posts/update/:id", async (req, res) => {
+    try {
+      const post = await updatePost(req.params.id, req.body)
+      return res.json(post)
+    } catch (error) {
+      console.error("error updating post:", error);
+      return res.status(500).end();
+    }
+  })
 }

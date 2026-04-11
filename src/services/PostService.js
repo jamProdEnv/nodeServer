@@ -56,3 +56,15 @@ export async function listPostsByTags(tags, options) {
   // );
   return await listPosts({ tags: { $in: normalized } }, options);
 }
+
+export async function deletePost(postId){
+   return await Post.deleteOne({ _id: postId })
+}
+
+export async function updatePost(postId, { title, author, contents, tags }) {
+  return await Post.findOneAndUpdate(
+    { _id: postId },
+    { $set: { title, author, contents, tags } },
+    { new: true },
+  )
+}
