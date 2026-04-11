@@ -29,10 +29,22 @@ export function postRoutes(app) {
   });
 
   app.get("/api/v1/posts", async (req, res) => {
-    const { sortBy, sortOrder, author, tag } = req.query;
+    const { sortBy, sortOrder, author, tag, searchBy, query } = req.query;
     const options = { sortBy, sortOrder };
 
     try {
+       // ✅ NEW unified search handling
+    if (searchBy && query) {
+      if (searchBy === "author") {
+        const posts = await listPostsByAuthor(query, options);
+        return res.status(200).json(posts);
+      }
+
+      if (searchBy === "tag") {
+        const posts = await listPostsByTags(query, options);
+        return res.status(200).json(posts);
+      }
+    }
       if (author && tag) {
         res.status(400).json({
           error: "Query By Either Author Or Tag, Not Both.",

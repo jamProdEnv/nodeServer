@@ -22,15 +22,42 @@ export async function createPost(userId, { title, contents, tags }) {
   return await post.save();
 }
 
+// async function listPosts(
+//   query = {},
+//   { sortBy = "createdAt", sortOrder = "descending" } = {}
+// ) {
+//   //  Mongoose Syntax For Querying The Database (ORM)
+//   //  Not Very Familiar With It
+//   const sortField = sortBy || "createdAt";
+
+//   const order = sortOrder === "ascending" ? 1: -1;
+//   return await Post.find(query)
+//     .populate("author", "username")
+//     .sort({ [sortField]: order });
+// }
+
 async function listPosts(
   query = {},
-  { sortBy = "createdAt", sortOrder = "descending" } = {}
+  { sortBy, sortOrder } = {}
 ) {
-  //  Mongoose Syntax For Querying The Database (ORM)
-  //  Not Very Familiar With It
+  // ✅ Default field
+  const sortField = sortBy && sortBy !== "" ? sortBy : "createdAt";
+
+  // ✅ Strict handling of sort order
+  let order;
+  if (sortOrder === "ascending") {
+    order = 1;
+  } else if (sortOrder === "descending") {
+    order = -1;
+  } else {
+    order = -1; // default fallback
+  }
+
+  console.log("SORT DEBUG:", sortField, order);
+
   return await Post.find(query)
     .populate("author", "username")
-    .sort({ [sortBy]: sortOrder });
+    .sort({ [sortField]: order });
 }
 
 export async function listAllPosts(options) {
@@ -40,6 +67,7 @@ export async function listAllPosts(options) {
 export async function listPostsByAuthor(authorUsername, options) {
   // const user = await User.findOne({ username: authorUsername });
   const admin = await Admin.findOne({ username: authorUsername });
+ 
   // if (!user) return [];
   if (!admin) return [];
   // return await listPosts({ author: user._id }, options);
@@ -65,6 +93,9 @@ export async function updatePost(postId, { title, author, contents, tags }) {
   return await Post.findOneAndUpdate(
     { _id: postId },
     { $set: { title, author, contents, tags } },
-    { new: true },
+    { 
+      new: true,
+     
+     },
   )
 }
